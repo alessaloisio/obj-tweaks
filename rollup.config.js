@@ -16,7 +16,7 @@ export default {
   ],
   output: [
     {
-      file: "{[{name}]}.js",
+      file: "obj-update.js",
       format: "umd",
       name: pkg.name,
       banner: `/*!\n${String(fs.readFileSync("./LICENSE"))

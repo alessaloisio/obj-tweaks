@@ -1,6 +1,6 @@
-# {[{name}]}.JS
+# obj-update.JS
 
-{[{description}]}
+Library to manipulate javascript object
 
 # Features
 
@@ -18,7 +18,7 @@
 - `npm test` - Test written examples on pure JS for better understanding module usage.
 - `npm run lint` - Run ESlint with airbnb-config
 - `npm run lint:fix` - Run ESlint with airbnb-config and try to fix
-- `npm run minify` - Minify {[{name}]}.js
+- `npm run minify` - Minify obj-update.js
 - `npm run watch:browser` - Run build on file change
 
 # Installation
@@ -27,4 +27,4 @@ Just clone this repo and remove `.git` folder.
 
 # License
 
-MIT © {[{author}]}
+MIT © Aloisio Alessandro

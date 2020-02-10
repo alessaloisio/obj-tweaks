@@ -7,7 +7,7 @@
     "src/**/*.js"
   ],
   "exclude": [
-    "{[{name}]}.js",
+    "obj-update.js",
     "lib/**/*.js"
   ]
 }

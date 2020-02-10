@@ -1,9 +1,9 @@
 {
-  "name": "{[{name}]}",
-  "main": "{[{name}]}.js",
-  "homepage": "{[{repoUrl}]}",
-  "authors": ["{[{author}]}"],
-  "description": "{[{description}]}",
+  "name": "obj-update",
+  "main": "obj-update.js",
+  "homepage": "https://github.com/alessaloisio/object-update.git",
+  "authors": ["Aloisio Alessandro"],
+  "description": "Library to manipulate javascript object",
   "license": "MIT",
   "ignore": [
     "**/.*",
