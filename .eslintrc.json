@@ -13,9 +13,11 @@
   },
   "rules": {
     "camelcase": 0,
+    "arrow-parens": 0,
     "no-param-reassign": 0,
     "one-var": 0,
     "one-var-declaration-per-line": 0,
+    "space-before-function-paren": 0,
     "func-names": 0,
     "no-console": 0,
     "newline-per-chained-call": 0,
@@ -28,7 +30,7 @@
       "WithStatement"
     ],
     "no-restricted-globals": 0,
-    "prefer-destructuring": 0,
+    "prefer-destructuring": 1,
     "comma-dangle": [
       2,
       {
