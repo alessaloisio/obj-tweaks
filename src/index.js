@@ -1,9 +1,19 @@
+const remapKeys = opt => {
+  console.log(opt);
+
+  Object.keys(opt).map(key => {
+    console.log(key.indexOf('.'));
+  });
+
+  return opt;
+};
+
 export default class Update {
   constructor(obj) {
     this.obj = obj;
 
     this.findInitState = {
-      lvl: 0,
+      depth: 0,
       validation: {
         position: 0,
         status: false,
@@ -12,8 +22,8 @@ export default class Update {
     };
   }
 
-  find(options) {
-    console.log('find function :', this.findRecursive(this.obj, options));
+  find(opt) {
+    return this.findRecursive(this.obj, remapKeys(opt));
   }
 
   findRecursive(
@@ -24,9 +34,11 @@ export default class Update {
   ) {
     // Start the properties loop
     Object.keys(obj).map(key => {
-      console.log(key);
-      console.log(conditions[key]);
-      console.log(obj[key]);
+      if (!opt.validation.position && conditions[key]) {
+        opt.validation.position = opt.depth;
+        opt.validation.status = true;
+      }
+
       if (obj[key] && typeof obj[key] === 'object') {
         let tmpConditions = conditions[key]
           ? { ...conditions[key] }
@@ -34,44 +46,27 @@ export default class Update {
 
         this.findRecursive(obj[key], tmpConditions, results, {
           ...opt,
-          lvl: opt.lvl + 1,
+          depth: opt.depth + 1,
         });
 
-        if (opt.lvl >= opt.validation.position) {
+        if (opt.depth >= opt.validation.position) {
           if (!Object.keys(tmpConditions).length) {
-            console.log(`!! VERSUS !! ${key}`);
-            console.log(opt);
-            console.log(tmpConditions);
-            console.log(conditions);
-            console.log('!! END VERSUS !!');
             delete conditions[key];
           }
         }
       } else if (obj[key] === conditions[key]) {
-        console.log(`${key} : to validate`);
-        console.log('validation :', opt);
-        console.log(conditions);
-
         if (!opt.validation.position) {
-          console.log('edited ??');
-          opt.validation.position = opt.lvl;
+          opt.validation.position = opt.depth;
           opt.validation.status = true;
-          console.log(opt);
         }
 
         delete conditions[key];
-        console.log(`${key} deleted`);
-        console.log(conditions);
-        console.log('\n');
       }
       return true;
     });
 
     // Validation results and clear states
-    if (opt.validation.status && opt.lvl === opt.validation.position) {
-      console.log(opt);
-      console.log(conditions);
-
+    if (opt.validation.status && opt.depth === opt.validation.position) {
       if (!Object.keys(conditions).length) {
         results.push(obj);
       }
@@ -84,8 +79,6 @@ export default class Update {
           status: false,
         },
       };
-
-      console.log('restart validation');
     }
 
     return results;
@@ -116,68 +109,7 @@ export default class Update {
 // eslint-disable-next-line no-extend-native
 Object.prototype.update = function(find, options) {
   const element = new Update(this);
-  element.find(find);
+  console.log(element.find(find));
   // element.find(find).merge(options);
   return element.obj;
 };
-
-// DEMO
-const state = {
-  data: {
-    users: {
-      123456: {
-        _id: 123456,
-        active: true,
-        status: true,
-        info: {
-          name: 'Alessandro',
-          age: 24,
-          links: {
-            blog: 'https://aloisio.work',
-          },
-        },
-      },
-    },
-    favourites: {
-      234567: {
-        _id: 234567,
-        active: true,
-        status: true,
-        info: {
-          name: 'Alicia',
-          age: 24,
-          links: {
-            blog: 'https://atraversleslivres.be',
-          },
-        },
-      },
-    },
-  },
-  loading: false,
-  error: null,
-};
-
-// state.update({ _id: 234567 }, { status: false });
-// state.update({ _id: 234567, active: true }, { status: false });
-// state.update({ active: true }, { status: false });
-
-// state.update(
-//   {
-//     status: true,
-//     info: { age: 24 },
-//   },
-//   { status: false }
-// );
-
-state.update(
-  {
-    // strat position here
-    info: {
-      links: {
-        blog: 'https://aloisio.work',
-      },
-    },
-  },
-  { status: false }
-);
-// state.update({ 'info.age': 24 }, { status: false });
