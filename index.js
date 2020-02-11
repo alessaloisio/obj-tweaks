@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
@@ -84,7 +86,10 @@ function () {
           var tmpConditions = conditions[key] ? _objectSpread({}, conditions[key]) : _objectSpread({}, conditions);
 
           _this.findRecursive(obj[key], tmpConditions, results, _objectSpread({}, opt, {
-            depth: opt.depth + 1
+            depth: opt.depth + 1,
+            validation: _objectSpread({}, opt.validation, {
+              findPath: [].concat((0, _toConsumableArray2.default)(opt.validation.findPath), [key])
+            })
           }));
 
           if (opt.depth >= opt.validation.position) {
@@ -106,6 +111,8 @@ function () {
 
       if (opt.validation.status && opt.depth === opt.validation.position) {
         if (!Object.keys(conditions).length) {
+          // eslint-disable-next-line no-underscore-dangle
+          // obj._v_path = opt.validation.findPath;
           results.push(obj);
         }
 
@@ -153,8 +160,8 @@ exports.default = Update;
 
 Object.prototype.update = function (find, opt) {
   var element = new Update(this);
-  var newState = element.find(find).merge(opt);
-  console.log(newState);
+  element.find(find).merge(opt); // console.log(newState);
+
   return element.obj;
 }; // eslint-disable-next-line no-extend-native
 

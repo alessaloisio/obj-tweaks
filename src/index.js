@@ -67,6 +67,10 @@ export default class Update {
         this.findRecursive(obj[key], tmpConditions, results, {
           ...opt,
           depth: opt.depth + 1,
+          validation: {
+            ...opt.validation,
+            findPath: [...opt.validation.findPath, key],
+          },
         });
 
         if (opt.depth >= opt.validation.position) {
@@ -88,6 +92,8 @@ export default class Update {
     // Validation results and clear states
     if (opt.validation.status && opt.depth === opt.validation.position) {
       if (!Object.keys(conditions).length) {
+        // eslint-disable-next-line no-underscore-dangle
+        // obj._v_path = opt.validation.findPath;
         results.push(obj);
       }
 
@@ -129,8 +135,8 @@ export default class Update {
 // eslint-disable-next-line no-extend-native
 Object.prototype.update = function(find, opt) {
   const element = new Update(this);
-  const newState = element.find(find).merge(opt);
-  console.log(newState);
+  element.find(find).merge(opt);
+  // console.log(newState);
   return element.obj;
 };
 
