@@ -1,5 +1,5 @@
 {
-  "name": "object-update",
+  "name": "@alessio95/object-update",
   "version": "0.0.1",
   "description": "Library to manipulate javascript object",
   "main": "index.js",

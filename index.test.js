@@ -57,13 +57,11 @@ var state = {
 //   },
 //   { status: false }
 // );
-
-console.log(state.update({
-  _id: 123456
-}, {
-  status: false,
-  'info.age': 18
-})); // console.log(state.find({ active: true }).merge({ 'info.age': 18 }));
+// console.log(state.update({ _id: 123456 }, { status: false, 'info.age': 18 }));
+// console.log(state.find({ _id: 123456 }).merge({ 'info.age': 18 }));
 // console.log(state.find({ active: true }));
 // console.log(state.merge({ 'info.age': 18 }));
-// console.log(state);
+
+console.log(state.find({
+  'info.age': 24
+}));
