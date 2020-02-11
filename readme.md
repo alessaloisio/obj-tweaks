@@ -42,7 +42,7 @@ const state = {
   error: null,
 };
 ```
-
+### 1. Find
 ```js
 /**
 * Simple find
@@ -103,6 +103,7 @@ state.find({ 'info.age': 24 })
 ]
 ```
 
+### 2. Merge
 ```js
 /**
 * Simple merge
@@ -130,6 +131,7 @@ state.merge({ 'info.age': 18 })
 }
 ```
 
+### 3. Combine
 ```js
 /**
 * Combine find and merge
@@ -147,6 +149,7 @@ state.find({ _id: 123456 }).merge({ 'info.age': 18 })
 ]
 ```
 
+### 4. Update
 ```js
 /**
 * Update the working Object
@@ -170,6 +173,18 @@ state.update({ _id: 123456 }, { status: false, 'info.age': 18 })
 }
 ```
 
+**Of course**, you can also add more conditions on find option and how many you want of depth for sub properties.
+
+## Installation
+
+```sh
+npm i @alessio95/object-update
+```
+
+```js
+import '@alessio95/object-update';
+const update = require('@alessio95/object-update');
+```
 
 # License
 
