@@ -25,42 +25,66 @@ export default class Update {
     // Start the properties loop
     Object.keys(obj).map(key => {
       console.log(key);
+      console.log(conditions[key]);
+      console.log(obj[key]);
       if (obj[key] && typeof obj[key] === 'object') {
-        const newConditions = conditions[key] ? conditions[key] : conditions;
-        this.findRecursive(obj[key], { ...newConditions }, results, {
+        let tmpConditions = conditions[key]
+          ? { ...conditions[key] }
+          : { ...conditions };
+
+        this.findRecursive(obj[key], tmpConditions, results, {
           ...opt,
           lvl: opt.lvl + 1,
         });
-      } else if (obj[key] === conditions[key]) {
-        console.log(`${key} : validate`);
-        console.log(`${obj[key]} :: ${conditions[key]}`);
-        opt.validation.position = opt.lvl;
-        opt.validation.status = true;
 
+        if (opt.lvl >= opt.validation.position) {
+          if (!Object.keys(tmpConditions).length) {
+            console.log(`!! VERSUS !! ${key}`);
+            console.log(opt);
+            console.log(tmpConditions);
+            console.log(conditions);
+            console.log('!! END VERSUS !!');
+            delete conditions[key];
+          }
+        }
+      } else if (obj[key] === conditions[key]) {
+        console.log(`${key} : to validate`);
         console.log('validation :', opt);
+        console.log(conditions);
+
+        if (!opt.validation.position) {
+          console.log('edited ??');
+          opt.validation.position = opt.lvl;
+          opt.validation.status = true;
+          console.log(opt);
+        }
+
         delete conditions[key];
+        console.log(`${key} deleted`);
         console.log(conditions);
         console.log('\n');
       }
       return true;
     });
 
+    // Validation results and clear states
     if (opt.validation.status && opt.lvl === opt.validation.position) {
+      console.log(opt);
+      console.log(conditions);
+
       if (!Object.keys(conditions).length) {
         results.push(obj);
       }
 
-      // Clear opt validation
       opt = {
         ...opt,
         validation: {
+          ...opt.validation,
           position: 0,
           status: false,
         },
       };
 
-      console.log(opt);
-      console.log(conditions);
       console.log('restart validation');
     }
 
@@ -108,6 +132,9 @@ const state = {
         info: {
           name: 'Alessandro',
           age: 24,
+          links: {
+            blog: 'https://aloisio.work',
+          },
         },
       },
     },
@@ -115,10 +142,13 @@ const state = {
       234567: {
         _id: 234567,
         active: true,
-        status: false,
+        status: true,
         info: {
           name: 'Alicia',
           age: 24,
+          links: {
+            blog: 'https://atraversleslivres.be',
+          },
         },
       },
     },
@@ -130,10 +160,24 @@ const state = {
 // state.update({ _id: 234567 }, { status: false });
 // state.update({ _id: 234567, active: true }, { status: false });
 // state.update({ active: true }, { status: false });
-// state.update({ 'info.age': 24 }, { status: false });
+
+// state.update(
+//   {
+//     status: true,
+//     info: { age: 24 },
+//   },
+//   { status: false }
+// );
+
 state.update(
   {
-    info: { age: 24 },
+    // strat position here
+    info: {
+      links: {
+        blog: 'https://aloisio.work',
+      },
+    },
   },
   { status: false }
 );
+// state.update({ 'info.age': 24 }, { status: false });

@@ -50,41 +50,61 @@ function () {
       // Start the properties loop
       Object.keys(obj).map(function (key) {
         console.log(key);
+        console.log(conditions[key]);
+        console.log(obj[key]);
 
         if (obj[key] && (0, _typeof2.default)(obj[key]) === 'object') {
-          var newConditions = conditions[key] ? conditions[key] : conditions;
+          var tmpConditions = conditions[key] ? _objectSpread({}, conditions[key]) : _objectSpread({}, conditions);
 
-          _this.findRecursive(obj[key], _objectSpread({}, newConditions), results, _objectSpread({}, opt, {
+          _this.findRecursive(obj[key], tmpConditions, results, _objectSpread({}, opt, {
             lvl: opt.lvl + 1
           }));
+
+          if (opt.lvl >= opt.validation.position) {
+            if (!Object.keys(tmpConditions).length) {
+              console.log("!! VERSUS !! ".concat(key));
+              console.log(opt);
+              console.log(tmpConditions);
+              console.log(conditions);
+              console.log('!! END VERSUS !!');
+              delete conditions[key];
+            }
+          }
         } else if (obj[key] === conditions[key]) {
-          console.log("".concat(key, " : validate"));
-          console.log("".concat(obj[key], " :: ").concat(conditions[key]));
-          opt.validation.position = opt.lvl;
-          opt.validation.status = true;
+          console.log("".concat(key, " : to validate"));
           console.log('validation :', opt);
+          console.log(conditions);
+
+          if (!opt.validation.position) {
+            console.log('edited ??');
+            opt.validation.position = opt.lvl;
+            opt.validation.status = true;
+            console.log(opt);
+          }
+
           delete conditions[key];
+          console.log("".concat(key, " deleted"));
           console.log(conditions);
           console.log('\n');
         }
 
         return true;
-      });
+      }); // Validation results and clear states
 
       if (opt.validation.status && opt.lvl === opt.validation.position) {
-        if (!Object.keys(conditions).length) {
-          results.push(obj);
-        } // Clear opt validation
-
-
-        opt = _objectSpread({}, opt, {
-          validation: {
-            position: 0,
-            status: false
-          }
-        });
         console.log(opt);
         console.log(conditions);
+
+        if (!Object.keys(conditions).length) {
+          results.push(obj);
+        }
+
+        opt = _objectSpread({}, opt, {
+          validation: _objectSpread({}, opt.validation, {
+            position: 0,
+            status: false
+          })
+        });
         console.log('restart validation');
       }
 
@@ -135,7 +155,10 @@ var state = {
         status: true,
         info: {
           name: 'Alessandro',
-          age: 24
+          age: 24,
+          links: {
+            blog: 'https://aloisio.work'
+          }
         }
       }
     },
@@ -143,10 +166,13 @@ var state = {
       234567: {
         _id: 234567,
         active: true,
-        status: false,
+        status: true,
         info: {
           name: 'Alicia',
-          age: 24
+          age: 24,
+          links: {
+            blog: 'https://atraversleslivres.be'
+          }
         }
       }
     }
@@ -156,14 +182,24 @@ var state = {
 }; // state.update({ _id: 234567 }, { status: false });
 // state.update({ _id: 234567, active: true }, { status: false });
 // state.update({ active: true }, { status: false });
-// state.update({ 'info.age': 24 }, { status: false });
+// state.update(
+//   {
+//     status: true,
+//     info: { age: 24 },
+//   },
+//   { status: false }
+// );
 
 state.update({
+  // strat position here
   info: {
-    age: 24
+    links: {
+      blog: 'https://aloisio.work'
+    }
   }
 }, {
   status: false
-});
+}); // state.update({ 'info.age': 24 }, { status: false });
+
 module.exports = exports.default;
 module.exports.default = exports.default;
