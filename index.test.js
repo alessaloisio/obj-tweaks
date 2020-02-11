@@ -57,13 +57,14 @@ var state = {
 //   },
 //   { status: false }
 // );
-// state.update(
-//   { status: true, 'info.links.blog': 'https://aloisio.work', 'info.age': 24 },
-//   { status: false }
-// );
 
-console.log(state.find({
-  active: true
-}).merge({
-  'info.age': 18
-})); // console.log(state);
+console.log(state.update({
+  status: true,
+  'info.links.blog': 'https://aloisio.work',
+  'info.age': 24
+}, {
+  status: false
+}).data); // console.log(state.find({ active: true }).merge({ 'info.age': 18 }));
+// console.log(state.find({ active: true }));
+// console.log(state.merge({ 'info.age': 18 }));
+// console.log(state);

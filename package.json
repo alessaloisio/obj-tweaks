@@ -1,6 +1,6 @@
 {
-  "name": "obj-update",
-  "version": "1.0.0",
+  "name": "object-update",
+  "version": "0.0.1",
   "description": "Library to manipulate javascript object",
   "main": "index.js",
   "author": "Aloisio Alessandro",

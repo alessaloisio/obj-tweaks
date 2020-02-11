@@ -119,6 +119,7 @@ export default class Update {
       } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
         obj[key] = data[key];
       }
+      return true;
     });
 
     return obj;
@@ -128,7 +129,8 @@ export default class Update {
 // eslint-disable-next-line no-extend-native
 Object.prototype.update = function(find, opt) {
   const element = new Update(this);
-  element.find(find).merge(opt);
+  const newState = element.find(find).merge(opt);
+  console.log(newState);
   return element.obj;
 };
 

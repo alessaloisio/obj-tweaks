@@ -139,6 +139,8 @@ function () {
         } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
           obj[key] = data[key];
         }
+
+        return true;
       });
       return obj;
     }
@@ -151,7 +153,8 @@ exports.default = Update;
 
 Object.prototype.update = function (find, opt) {
   var element = new Update(this);
-  element.find(find).merge(opt);
+  var newState = element.find(find).merge(opt);
+  console.log(newState);
   return element.obj;
 }; // eslint-disable-next-line no-extend-native
 

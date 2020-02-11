@@ -1,6 +1,7 @@
-# obj-update.JS
+# object-update.JS
 
 Library to manipulate javascript object
+
 
 # Features
 
