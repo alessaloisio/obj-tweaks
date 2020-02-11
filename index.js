@@ -121,24 +121,26 @@ function () {
     }
   }, {
     key: "merge",
-    value: function merge() {
-      console.log(this); // Object.keys(this.obj).map(key => {
-      //   if (typeof data[key] !== "undefined") {
-      //     if (typeof this.obj[key] === "object") {
-      //       this.obj[key] = {
-      //         ...this.obj[key],
-      //         ...update(this.obj[key], data[key])
-      //       };
-      //     } else if (this.obj[key] !== data[key]) {
-      //       this.obj[key] = data[key];
-      //     }
-      //   } else if (this.obj[key] && typeof this.obj[key] === "object") {
-      //     this.obj[key] = {
-      //       ...this.obj[key],
-      //       ...update(this.obj[key], data)
-      //     };
-      //   }
-      // });
+    value: function merge(opt) {
+      return this.mergeRecursive(this.obj, remapKeys(opt));
+    }
+  }, {
+    key: "mergeRecursive",
+    value: function mergeRecursive(obj, data) {
+      var _this2 = this;
+
+      Object.keys(obj).map(function (key) {
+        if (obj[key] && (0, _typeof2.default)(obj[key]) === 'object') {
+          if (typeof data[key] !== 'undefined') {
+            _this2.mergeRecursive(obj[key], data[key]);
+          } else {
+            _this2.mergeRecursive(obj[key], data);
+          }
+        } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
+          obj[key] = data[key];
+        }
+      });
+      return obj;
     }
   }]);
   return Update;
@@ -147,11 +149,22 @@ function () {
 
 exports.default = Update;
 
-Object.prototype.update = function (find, options) {
+Object.prototype.update = function (find, opt) {
   var element = new Update(this);
-  console.log(element.find(find)); // element.find(find).merge(options);
-
+  element.find(find).merge(opt);
   return element.obj;
+}; // eslint-disable-next-line no-extend-native
+
+
+Object.prototype.merge = function (opt) {
+  var element = new Update(this);
+  return element.merge(opt);
+}; // eslint-disable-next-line no-extend-native
+
+
+Object.prototype.find = function (opt) {
+  var element = new Update(this);
+  return element.find(opt);
 };
 
 module.exports = exports.default;

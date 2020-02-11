@@ -104,32 +104,42 @@ export default class Update {
     return results;
   }
 
-  merge() {
-    console.log(this);
-    // Object.keys(this.obj).map(key => {
-    //   if (typeof data[key] !== "undefined") {
-    //     if (typeof this.obj[key] === "object") {
-    //       this.obj[key] = {
-    //         ...this.obj[key],
-    //         ...update(this.obj[key], data[key])
-    //       };
-    //     } else if (this.obj[key] !== data[key]) {
-    //       this.obj[key] = data[key];
-    //     }
-    //   } else if (this.obj[key] && typeof this.obj[key] === "object") {
-    //     this.obj[key] = {
-    //       ...this.obj[key],
-    //       ...update(this.obj[key], data)
-    //     };
-    //   }
-    // });
+  merge(opt) {
+    return this.mergeRecursive(this.obj, remapKeys(opt));
+  }
+
+  mergeRecursive(obj, data) {
+    Object.keys(obj).map(key => {
+      if (obj[key] && typeof obj[key] === 'object') {
+        if (typeof data[key] !== 'undefined') {
+          this.mergeRecursive(obj[key], data[key]);
+        } else {
+          this.mergeRecursive(obj[key], data);
+        }
+      } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
+        obj[key] = data[key];
+      }
+    });
+
+    return obj;
   }
 }
 
 // eslint-disable-next-line no-extend-native
-Object.prototype.update = function(find, options) {
+Object.prototype.update = function(find, opt) {
   const element = new Update(this);
-  console.log(element.find(find));
-  // element.find(find).merge(options);
+  element.find(find).merge(opt);
   return element.obj;
+};
+
+// eslint-disable-next-line no-extend-native
+Object.prototype.merge = function(opt) {
+  const element = new Update(this);
+  return element.merge(opt);
+};
+
+// eslint-disable-next-line no-extend-native
+Object.prototype.find = function(opt) {
+  const element = new Update(this);
+  return element.find(opt);
 };
