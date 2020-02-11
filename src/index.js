@@ -1,9 +1,29 @@
+/**
+ * Remap properties on the object
+ * Ex: "info.age" => info: {age: ...}
+ * @param {Object} opt Object with properties to remap
+ */
 const remapKeys = opt => {
-  console.log(opt);
+  for (let i = 0; i < Object.keys(opt).length; i++) {
+    const key = Object.keys(opt)[i];
 
-  Object.keys(opt).map(key => {
-    console.log(key.indexOf('.'));
-  });
+    if (opt[key] && typeof opt[key] === 'object') {
+      remapKeys(opt[key]);
+    } else {
+      const indexOfKey = key.indexOf('.');
+      if (indexOfKey > 0) {
+        const optKey = key.substring(0, indexOfKey);
+
+        opt[optKey] = {
+          ...opt[optKey],
+          [key.substring(indexOfKey + 1)]: opt[key],
+        };
+
+        delete opt[key];
+        i -= 1;
+      }
+    }
+  }
 
   return opt;
 };
