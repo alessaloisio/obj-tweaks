@@ -2,14 +2,17 @@
  * Remap properties on the object
  * Ex: "info.age" => info: {age: ...}
  * @param {Object} opt Object with properties to remap
+ * @param {Object} data Object if you want add data to a specific position
  */
 const remapKeys = opt => {
-  for (let i = 0; i < Object.keys(opt).length; i++) {
-    const key = Object.keys(opt)[i];
+  if (typeof opt === 'object') {
+    for (let i = 0; i < Object.keys(opt).length; i++) {
+      const key = Object.keys(opt)[i];
 
-    if (opt[key] && typeof opt[key] === 'object') {
-      remapKeys(opt[key]);
-    } else {
+      if (opt[key] && typeof opt[key] === 'object') {
+        remapKeys(opt[key]);
+      }
+
       const indexOfKey = key.indexOf('.');
       if (indexOfKey > 0) {
         const optKey = key.substring(0, indexOfKey);
@@ -28,6 +31,24 @@ const remapKeys = opt => {
   return opt;
 };
 
+/**
+ * Add data to a specific position
+ * Ex: "info.age" => info: {age: [data]}
+ * @param {Object} opt Object with properties to remap
+ * @param {Object} data Object you want add data to a specific position
+ */
+const addOnRemapKey = (opt, operator = '$exist') => {
+  if (typeof opt === 'string') {
+    opt = {
+      [opt]: operator,
+    };
+  }
+  return remapKeys(opt);
+};
+
+/**
+ * Class UPDATE
+ */
 export default class Update {
   constructor(obj) {
     this.obj = obj;
@@ -54,6 +75,16 @@ export default class Update {
   ) {
     // Start the properties loop
     Object.keys(obj).map(key => {
+      // Manage Operator
+      if (conditions[key] && conditions[key][0] === '$') {
+        switch (conditions[key]) {
+          case '$exist':
+            results.push(obj[key]);
+            break;
+          default:
+        }
+      }
+
       if (!opt.validation.position && conditions[key]) {
         opt.validation.position = opt.depth;
         opt.validation.status = true;
@@ -86,6 +117,7 @@ export default class Update {
 
         delete conditions[key];
       }
+
       return true;
     });
 
@@ -130,13 +162,26 @@ export default class Update {
 
     return obj;
   }
+
+  add(position, data) {
+    position = addOnRemapKey(position);
+
+    console.log(this.obj);
+    console.log(position);
+    console.log(data);
+
+    console.log(this.obj.find(position));
+  }
 }
 
+/**
+ * PROTOTYPES
+ */
 // eslint-disable-next-line no-extend-native
-Object.prototype.update = function(find, opt) {
-  const element = new Update(this);
+Object.prototype.update = function(find, opt, newObj = true) {
+  const self = newObj ? JSON.parse(JSON.stringify(this)) : this;
+  const element = new Update(self);
   element.find(find).merge(opt);
-  // console.log(newState);
   return element.obj;
 };
 
@@ -150,4 +195,10 @@ Object.prototype.merge = function(opt) {
 Object.prototype.find = function(opt) {
   const element = new Update(this);
   return element.find(opt);
+};
+
+// eslint-disable-next-line no-extend-native
+Object.prototype.add = function(position, data) {
+  const element = new Update(this);
+  console.log(element.add(position, data));
 };

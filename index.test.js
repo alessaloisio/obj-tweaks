@@ -1,9 +1,7 @@
-"use strict";
-
-require("./index");
+require('./index');
 
 // DEMO
-var state = {
+let state = {
   data: {
     users: {
       123456: {
@@ -14,10 +12,10 @@ var state = {
           name: 'Alessandro',
           age: 24,
           links: {
-            blog: 'https://aloisio.work'
-          }
-        }
-      }
+            blog: 'https://aloisio.work',
+          },
+        },
+      },
     },
     favourites: {
       234567: {
@@ -28,15 +26,17 @@ var state = {
           name: 'Alicia',
           age: 24,
           links: {
-            blog: 'https://atraversleslivres.be'
-          }
-        }
-      }
-    }
+            blog: 'https://atraversleslivres.be',
+          },
+        },
+      },
+    },
   },
   loading: false,
-  error: null
-}; // state.update({ _id: 234567 }, { status: false });
+  error: null,
+};
+
+// state.update({ _id: 234567 }, { status: false });
 // state.update({ _id: 234567, active: true }, { status: false });
 // state.update({ active: true }, { status: false });
 // state.update(
@@ -62,6 +62,24 @@ var state = {
 // console.log(state.find({ active: true }));
 // console.log(state.merge({ 'info.age': 18 }));
 
-console.log(state.find({
-  'info.age': 24
-}));
+// console.log(
+//   state.find({
+//     'info.age': 24,
+//   })
+// );
+
+console.log(
+  state.add('users', [
+    {
+      987665: {
+        _id: 987665,
+        active: true,
+        status: true,
+        info: {
+          name: 'Serge',
+          age: 40,
+        },
+      },
+    },
+  ])
+);
