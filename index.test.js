@@ -68,18 +68,30 @@ let state = {
 //   })
 // );
 
+// if not exist add
 console.log(
-  state.add('users', [
+  'demo',
+  state.update(
+    { _id: 123456 },
     {
-      987665: {
-        _id: 987665,
-        active: true,
-        status: true,
-        info: {
-          name: 'Serge',
-          age: 40,
-        },
+      status: false,
+      'info.age': 18,
+      test: 'kikou',
+    }
+  ).data.users
+);
+
+const e = state.add('users', [
+  {
+    987665: {
+      _id: 987665,
+      active: true,
+      status: true,
+      info: {
+        name: 'Serge',
+        age: 40,
       },
     },
-  ])
-);
+  },
+]);
+console.log(e.data);

@@ -23,6 +23,7 @@
     "no-console": 0,
     "newline-per-chained-call": 0,
     "prefer-const": 0,
+    "prefer-object-spread": 0,
     "linebreak-style": 0,
     "no-restricted-syntax": [
       2,

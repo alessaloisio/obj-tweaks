@@ -156,12 +156,8 @@ function () {
           results.push(obj);
         }
 
-        opt = _objectSpread({}, opt, {
-          validation: _objectSpread({}, opt.validation, {
-            position: 0,
-            status: false
-          })
-        });
+        opt.validation.position = 0;
+        opt.validation.status = false;
       }
 
       return results;
@@ -176,15 +172,25 @@ function () {
     value: function mergeRecursive(obj, data) {
       var _this2 = this;
 
+      var depth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
       Object.keys(obj).map(function (key) {
         if (obj[key] && (0, _typeof2.default)(obj[key]) === 'object') {
           if (typeof data[key] !== 'undefined') {
-            _this2.mergeRecursive(obj[key], data[key]);
+            _this2.mergeRecursive(obj[key], data[key], depth + 1);
+
+            if (!Object.keys(data[key]).length) {
+              delete data[key];
+            }
           } else {
-            _this2.mergeRecursive(obj[key], data);
+            _this2.mergeRecursive(obj[key], data, depth + 1);
           }
         } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
           obj[key] = data[key];
+          delete data[key];
+        }
+
+        if (Object.keys(data).length > 0 && !depth) {
+          obj[key] = Object.assign(obj[key], data instanceof Array ? data[key] : data);
         }
 
         return true;
@@ -195,8 +201,7 @@ function () {
     key: "add",
     value: function add(position, data) {
       position = addOnRemapKey(position);
-      console.log(data);
-      console.log(this.obj.update(position, data));
+      return this.obj.update(position, data, false);
     }
   }]);
   return Update;
@@ -209,30 +214,33 @@ function () {
 
 exports.default = Update;
 
-Object.prototype.update = function (find, opt) {
+Object.prototype.update = function (find, data) {
   var newObj = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
   var self = newObj ? JSON.parse(JSON.stringify(this)) : this;
   var element = new Update(self);
-  element.find(find).merge(opt);
+  element.find(find).merge(data);
   return element.obj;
 }; // eslint-disable-next-line no-extend-native
 
 
-Object.prototype.merge = function (opt) {
-  var element = new Update(this);
-  return element.merge(opt);
-}; // eslint-disable-next-line no-extend-native
-
-
-Object.prototype.find = function (opt) {
-  var element = new Update(this);
-  return element.find(opt);
-}; // eslint-disable-next-line no-extend-native
-
-
 Object.prototype.add = function (position, data) {
+  var newObj = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  var self = newObj ? JSON.parse(JSON.stringify(this)) : this;
+  var element = new Update(self);
+  element.add(position, data);
+  return element.obj;
+}; // eslint-disable-next-line no-extend-native
+
+
+Object.prototype.merge = function (data) {
   var element = new Update(this);
-  console.log(element.add(position, data));
+  return element.merge(data);
+}; // eslint-disable-next-line no-extend-native
+
+
+Object.prototype.find = function (data) {
+  var element = new Update(this);
+  return element.find(data);
 };
 
 module.exports = exports.default;
