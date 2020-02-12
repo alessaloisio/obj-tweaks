@@ -79,12 +79,16 @@ export default class Update {
       if (conditions[key] && conditions[key][0] === '$') {
         switch (conditions[key]) {
           case '$exist':
+          case '$get':
             results.push(obj[key]);
+            break;
+          case '$delete':
             break;
           default:
         }
       }
 
+      // Start at a specific position
       if (!opt.validation.position && conditions[key]) {
         opt.validation.position = opt.depth;
         opt.validation.status = true;
@@ -166,11 +170,9 @@ export default class Update {
   add(position, data) {
     position = addOnRemapKey(position);
 
-    console.log(this.obj);
-    console.log(position);
     console.log(data);
 
-    console.log(this.obj.find(position));
+    console.log(this.obj.update(position, data));
   }
 }
 
