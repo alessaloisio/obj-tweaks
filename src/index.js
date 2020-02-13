@@ -141,31 +141,40 @@ export default class Update {
   }
 
   merge(opt) {
+    if (opt instanceof Array) {
+      const results = opt.map(d => this.mergeRecursive(this.obj, remapKeys(d)));
+      return results;
+    }
     return this.mergeRecursive(this.obj, remapKeys(opt));
   }
 
-  mergeRecursive(obj, data, depth = 0) {
+  mergeRecursive(obj, data, opt = { ...this.findInitState }) {
     Object.keys(obj).map(key => {
       if (obj[key] && typeof obj[key] === 'object') {
         if (typeof data[key] !== 'undefined') {
-          this.mergeRecursive(obj[key], data[key], depth + 1);
+          this.mergeRecursive(obj[key], data[key], {
+            ...opt,
+            depth: opt.depth + 1,
+          });
 
-          if (!Object.keys(data[key]).length) {
-            delete data[key];
+          if (Object.keys(data[key]).length) {
+            obj[key] = Object.assign(obj[key], data[key]);
           }
+
+          delete data[key];
         } else {
-          this.mergeRecursive(obj[key], data, depth + 1);
+          this.mergeRecursive(obj[key], data, {
+            ...opt,
+            depth: opt.depth + 1,
+          });
         }
       } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
         obj[key] = data[key];
         delete data[key];
       }
 
-      if (Object.keys(data).length > 0 && !depth) {
-        obj[key] = Object.assign(
-          obj[key],
-          data instanceof Array ? data[key] : data
-        );
+      if (Object.keys(data).length > 0 && !opt.depth) {
+        obj[key] = Object.assign(obj[key], data);
       }
 
       return true;
@@ -175,8 +184,7 @@ export default class Update {
   }
 
   add(position, data) {
-    position = addOnRemapKey(position);
-    return this.obj.update(position, data, false);
+    return this.obj.update(addOnRemapKey(position, '$exist'), data, false);
   }
 }
 

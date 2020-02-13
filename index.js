@@ -165,32 +165,47 @@ function () {
   }, {
     key: "merge",
     value: function merge(opt) {
+      var _this2 = this;
+
+      if (opt instanceof Array) {
+        var results = opt.map(function (d) {
+          return _this2.mergeRecursive(_this2.obj, remapKeys(d));
+        });
+        return results;
+      }
+
       return this.mergeRecursive(this.obj, remapKeys(opt));
     }
   }, {
     key: "mergeRecursive",
     value: function mergeRecursive(obj, data) {
-      var _this2 = this;
+      var _this3 = this;
 
-      var depth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _objectSpread({}, this.findInitState);
       Object.keys(obj).map(function (key) {
         if (obj[key] && (0, _typeof2.default)(obj[key]) === 'object') {
           if (typeof data[key] !== 'undefined') {
-            _this2.mergeRecursive(obj[key], data[key], depth + 1);
+            _this3.mergeRecursive(obj[key], data[key], _objectSpread({}, opt, {
+              depth: opt.depth + 1
+            }));
 
-            if (!Object.keys(data[key]).length) {
-              delete data[key];
+            if (Object.keys(data[key]).length) {
+              obj[key] = Object.assign(obj[key], data[key]);
             }
+
+            delete data[key];
           } else {
-            _this2.mergeRecursive(obj[key], data, depth + 1);
+            _this3.mergeRecursive(obj[key], data, _objectSpread({}, opt, {
+              depth: opt.depth + 1
+            }));
           }
         } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
           obj[key] = data[key];
           delete data[key];
         }
 
-        if (Object.keys(data).length > 0 && !depth) {
-          obj[key] = Object.assign(obj[key], data instanceof Array ? data[key] : data);
+        if (Object.keys(data).length > 0 && !opt.depth) {
+          obj[key] = Object.assign(obj[key], data);
         }
 
         return true;
@@ -200,8 +215,7 @@ function () {
   }, {
     key: "add",
     value: function add(position, data) {
-      position = addOnRemapKey(position);
-      return this.obj.update(position, data, false);
+      return this.obj.update(addOnRemapKey(position, '$exist'), data, false);
     }
   }]);
   return Update;

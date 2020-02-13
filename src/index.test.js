@@ -66,4 +66,42 @@ const state = {
 // console.log(state.find({ active: true }));
 // console.log(state.merge({ 'info.age': 18 }));
 
-console.log(state.find({ 'info.age': 24 }));
+// if not exist add
+// console.log(
+//   'demo',
+//   state.update(
+//     { _id: 123456 },
+//     {
+//       status: false,
+//       'info.age': 18,
+//       'info.test': 'kikou',
+//     }
+//   )
+// );
+
+console.log(
+  state.add('users', [
+    {
+      987665: {
+        _id: 987665,
+        active: true,
+        status: true,
+        info: {
+          name: 'Serge',
+          age: 40,
+        },
+      },
+    },
+    {
+      4567890: {
+        _id: 4567890,
+        active: true,
+        status: true,
+        info: {
+          name: 'Dorian',
+          age: 21,
+        },
+      },
+    },
+  ])
+);

@@ -1,7 +1,9 @@
-require('./index');
+"use strict";
+
+require("./index");
 
 // DEMO
-let state = {
+var state = {
   data: {
     users: {
       123456: {
@@ -12,10 +14,10 @@ let state = {
           name: 'Alessandro',
           age: 24,
           links: {
-            blog: 'https://aloisio.work',
-          },
-        },
-      },
+            blog: 'https://aloisio.work'
+          }
+        }
+      }
     },
     favourites: {
       234567: {
@@ -26,17 +28,15 @@ let state = {
           name: 'Alicia',
           age: 24,
           links: {
-            blog: 'https://atraversleslivres.be',
-          },
-        },
-      },
-    },
+            blog: 'https://atraversleslivres.be'
+          }
+        }
+      }
+    }
   },
   loading: false,
-  error: null,
-};
-
-// state.update({ _id: 234567 }, { status: false });
+  error: null
+}; // state.update({ _id: 234567 }, { status: false });
 // state.update({ _id: 234567, active: true }, { status: false });
 // state.update({ active: true }, { status: false });
 // state.update(
@@ -61,37 +61,37 @@ let state = {
 // console.log(state.find({ _id: 123456 }).merge({ 'info.age': 18 }));
 // console.log(state.find({ active: true }));
 // console.log(state.merge({ 'info.age': 18 }));
-
+// if not exist add
 // console.log(
-//   state.find({
-//     'info.age': 24,
-//   })
+//   'demo',
+//   state.update(
+//     { _id: 123456 },
+//     {
+//       status: false,
+//       'info.age': 18,
+//       'info.test': 'kikou',
+//     }
+//   )
 // );
 
-// if not exist add
-console.log(
-  'demo',
-  state.update(
-    { _id: 123456 },
-    {
-      status: false,
-      'info.age': 18,
-      test: 'kikou',
+console.log(state.add('users', [{
+  987665: {
+    _id: 987665,
+    active: true,
+    status: true,
+    info: {
+      name: 'Serge',
+      age: 40
     }
-  ).data.users
-);
-
-const e = state.add('users', [
-  {
-    987665: {
-      _id: 987665,
-      active: true,
-      status: true,
-      info: {
-        name: 'Serge',
-        age: 40,
-      },
-    },
-  },
-]);
-console.log(e.data);
+  }
+}, {
+  4567890: {
+    _id: 4567890,
+    active: true,
+    status: true,
+    info: {
+      name: 'Dorian',
+      age: 21
+    }
+  }
+}]));
