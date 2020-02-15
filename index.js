@@ -67,17 +67,17 @@ var addOnRemapKey = function addOnRemapKey(opt) {
   return remapKeys(opt);
 };
 /**
- * Class UPDATE
+ * Class ObjUtils
  */
 
 
-var Update =
+var ObjUtils =
 /*#__PURE__*/
 function () {
-  function Update(obj) {
-    (0, _classCallCheck2.default)(this, Update);
+  function ObjUtils(obj) {
+    (0, _classCallCheck2.default)(this, ObjUtils);
     this.obj = obj;
-    this.findInitState = {
+    this.searchState = {
       depth: 0,
       validation: {
         position: 0,
@@ -87,10 +87,10 @@ function () {
     };
   }
 
-  (0, _createClass2.default)(Update, [{
+  (0, _createClass2.default)(ObjUtils, [{
     key: "find",
-    value: function find(opt) {
-      return this.findRecursive(this.obj, remapKeys(opt));
+    value: function find(conditions) {
+      return this.findRecursive(this.obj, remapKeys(conditions));
     }
   }, {
     key: "findRecursive",
@@ -98,7 +98,7 @@ function () {
       var _this = this;
 
       var results = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-      var opt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : _objectSpread({}, this.findInitState);
+      var opt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : _objectSpread({}, this.searchState);
       // Start the properties loop
       Object.keys(obj).map(function (key) {
         // Manage Operator
@@ -107,6 +107,7 @@ function () {
             case '$exist':
             case '$get':
               results.push(obj[key]);
+              delete conditions[key];
               break;
 
             case '$delete':
@@ -164,47 +165,67 @@ function () {
     }
   }, {
     key: "merge",
-    value: function merge(opt) {
+    value: function merge(data) {
       var _this2 = this;
 
-      if (opt instanceof Array) {
-        var results = opt.map(function (d) {
+      if (data instanceof Array) {
+        var results = data.map(function (d) {
           return _this2.mergeRecursive(_this2.obj, remapKeys(d));
         });
         return results;
       }
 
-      return this.mergeRecursive(this.obj, remapKeys(opt));
+      return this.mergeRecursive(this.obj, remapKeys(data));
     }
   }, {
     key: "mergeRecursive",
     value: function mergeRecursive(obj, data) {
       var _this3 = this;
 
-      var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _objectSpread({}, this.findInitState);
+      var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _objectSpread({}, this.searchState);
       Object.keys(obj).map(function (key) {
+        console.log(key);
+
         if (obj[key] && (0, _typeof2.default)(obj[key]) === 'object') {
           if (typeof data[key] !== 'undefined') {
+            console.log('rec2');
+            console.log(opt, data);
+
             _this3.mergeRecursive(obj[key], data[key], _objectSpread({}, opt, {
-              depth: opt.depth + 1
+              depth: opt.depth + 1,
+              validation: _objectSpread({}, opt.validation, {
+                position: opt.depth,
+                status: true
+              })
             }));
+
+            console.log(key, opt, obj[key], data); // Not exist add
 
             if (Object.keys(data[key]).length) {
               obj[key] = Object.assign(obj[key], data[key]);
             }
 
-            delete data[key];
+            if (opt.validation.position > opt.depth) {
+              delete data[key];
+            }
           } else {
-            _this3.mergeRecursive(obj[key], data, _objectSpread({}, opt, {
+            console.log('rec1');
+            console.log(opt, data);
+
+            _this3.mergeRecursive(obj[key], obj instanceof Array ? _objectSpread({}, data) : data, _objectSpread({}, opt, {
               depth: opt.depth + 1
             }));
           }
         } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
+          console.log('ookok');
           obj[key] = data[key];
-          delete data[key];
+
+          if (opt.validation.position > opt.depth) {
+            delete data[key];
+          }
         }
 
-        if (Object.keys(data).length > 0 && !opt.depth) {
+        if (obj[key] && Object.keys(data).length > 0 && opt.depth === opt.validation.position) {
           obj[key] = Object.assign(obj[key], data);
         }
 
@@ -214,48 +235,67 @@ function () {
     }
   }, {
     key: "add",
-    value: function add(position, data) {
-      return this.obj.update(addOnRemapKey(position, '$exist'), data, false);
+    value: function add(position, data, newObj) {
+      return this.obj.update(addOnRemapKey(position, '$exist'), data, newObj);
     }
   }]);
-  return Update;
+  return ObjUtils;
 }();
 /**
  * PROTOTYPES
  */
-// eslint-disable-next-line no-extend-native
 
 
-exports.default = Update;
+exports.default = ObjUtils;
+(0, _defineProperty2.default)(ObjUtils, "newObj", true);
+var cmds = ['update', 'find', 'add', 'merge', 'exist'];
+cmds.map(function (cmd) {
+  // eslint-disable-next-line no-extend-native
+  Object.prototype[cmd] = function () {
+    for (var _len = arguments.length, props = new Array(_len), _key = 0; _key < _len; _key++) {
+      props[_key] = arguments[_key];
+    }
 
-Object.prototype.update = function (find, data) {
-  var newObj = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-  var self = newObj ? JSON.parse(JSON.stringify(this)) : this;
-  var element = new Update(self);
-  element.find(find).merge(data);
-  return element.obj;
-}; // eslint-disable-next-line no-extend-native
+    // last element is a toggle to create a new Object
+    var newObj = typeof props[props.length - 1] === 'boolean' ? props.pop() : ObjUtils.newObj;
+    var self = newObj ? JSON.parse(JSON.stringify(this)) : this;
+    var element = new ObjUtils(self);
+    var conditions, data, position;
 
+    switch (cmd) {
+      case 'update':
+        // eslint-disable-next-line no-case-declarations
+        conditions = props[0];
+        data = props[1];
+        element.find(conditions, newObj).merge(data, newObj);
+        break;
 
-Object.prototype.add = function (position, data) {
-  var newObj = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-  var self = newObj ? JSON.parse(JSON.stringify(this)) : this;
-  var element = new Update(self);
-  element.add(position, data);
-  return element.obj;
-}; // eslint-disable-next-line no-extend-native
+      case 'find':
+        conditions = props[0];
+        return element.find(conditions, newObj);
 
+      case 'merge':
+        data = props[0];
+        return element.merge(data, newObj);
 
-Object.prototype.merge = function (data) {
-  var element = new Update(this);
-  return element.merge(data);
-}; // eslint-disable-next-line no-extend-native
+      case 'add':
+        position = props[0];
+        data = props[1];
+        element.add(position, data);
+        break;
 
+      case 'exist':
+        data = props[0];
+        return !!this.find((0, _defineProperty2.default)({}, data, '$exist'), newObj).length;
 
-Object.prototype.find = function (data) {
-  var element = new Update(this);
-  return element.find(data);
-};
+      default:
+        console.log('default');
+    }
 
+    return element.obj;
+  };
+
+  return true;
+});
 module.exports = exports.default;
 module.exports.default = exports.default;

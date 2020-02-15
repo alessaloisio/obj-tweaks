@@ -1,4 +1,5 @@
-import './index';
+import ObjUtils from './index';
+
 
 // DEMO
 const state = {
@@ -36,19 +37,23 @@ const state = {
   error: null,
 };
 
-// state.update({ _id: 234567 }, { status: false });
-// state.update({ _id: 234567, active: true }, { status: false });
-// state.update({ active: true }, { status: false });
+ObjUtils.newObj = false;
 
-// state.update(
+// console.log(state.update({ _id: 234567 }, { 'info.age': 30 }).data.favourites);
+// console.log(state.update({ _id: 234567, active: true }, { status: false }).data);
+// console.log(
+//   state.update({ active: true }, { status: false }).data
+// );
+
+// console.log('multi conditions', state.update(
 //   {
 //     status: true,
 //     info: { age: 24 },
 //   },
 //   { status: false }
-// );
+// ).data);
 
-// state.update(
+// console.log(state.update(
 //   {
 //     // strat position here
 //     info: {
@@ -58,13 +63,14 @@ const state = {
 //     },
 //   },
 //   { status: false }
-// );
+// ).data);
 
 // console.log(state.update({ _id: 123456 }, { status: false, 'info.age': 18 }));
-
-// console.log(state.find({ _id: 123456 }).merge({ 'info.age': 18 }));
+console.log(state.find({ _id: 123456 }).merge({ 'info.age': 18 }));
 // console.log(state.find({ active: true }));
-// console.log(state.merge({ 'info.age': 18 }));
+
+// TODO : Not working, just one updated
+// console.log(state.merge({ 'info.age': 18 }).data.users);
 
 // if not exist add
 // console.log(
@@ -76,32 +82,31 @@ const state = {
 //       'info.age': 18,
 //       'info.test': 'kikou',
 //     }
-//   )
+//   ).data.users
 // );
 
-console.log(
-  state.add('users', [
-    {
-      987665: {
-        _id: 987665,
-        active: true,
-        status: true,
-        info: {
-          name: 'Serge',
-          age: 40,
-        },
-      },
-    },
-    {
-      4567890: {
-        _id: 4567890,
-        active: true,
-        status: true,
-        info: {
-          name: 'Dorian',
-          age: 21,
-        },
-      },
-    },
-  ])
-);
+// console.log(
+//   state.add('users', {
+//     987665: {
+//       _id: 987665,
+//       active: true,
+//       status: true,
+//       info: {
+//         name: 'Serge',
+//         age: 40,
+//       },
+//     },
+//   })
+// );
+
+// console.log(
+//   state.add('users.987665', {
+//     _id: 987665,
+//     active: true,
+//     status: true,
+//     info: {
+//       name: 'Serge',
+//       age: 40,
+//     },
+//   })
+// );

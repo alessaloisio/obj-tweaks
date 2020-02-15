@@ -47,13 +47,15 @@ const addOnRemapKey = (opt, operator = '$exist') => {
 };
 
 /**
- * Class UPDATE
+ * Class ObjUtils
  */
-export default class Update {
+export default class ObjUtils {
+  static newObj = true;
+
   constructor(obj) {
     this.obj = obj;
 
-    this.findInitState = {
+    this.searchState = {
       depth: 0,
       validation: {
         position: 0,
@@ -63,15 +65,15 @@ export default class Update {
     };
   }
 
-  find(opt) {
-    return this.findRecursive(this.obj, remapKeys(opt));
+  find(conditions) {
+    return this.findRecursive(this.obj, remapKeys(conditions));
   }
 
   findRecursive(
     obj,
     conditions,
     results = [],
-    opt = { ...this.findInitState }
+    opt = { ...this.searchState }
   ) {
     // Start the properties loop
     Object.keys(obj).map(key => {
@@ -81,6 +83,7 @@ export default class Update {
           case '$exist':
           case '$get':
             results.push(obj[key]);
+            delete conditions[key];
             break;
           case '$delete':
             break;
@@ -140,40 +143,63 @@ export default class Update {
     return results;
   }
 
-  merge(opt) {
-    if (opt instanceof Array) {
-      const results = opt.map(d => this.mergeRecursive(this.obj, remapKeys(d)));
+  merge(data) {
+    if (data instanceof Array) {
+      const results = data.map(d => this.mergeRecursive(this.obj, remapKeys(d)));
       return results;
     }
-    return this.mergeRecursive(this.obj, remapKeys(opt));
+
+    return this.mergeRecursive(this.obj, remapKeys(data));
   }
 
-  mergeRecursive(obj, data, opt = { ...this.findInitState }) {
+  mergeRecursive(obj, data, opt = { ...this.searchState }) {
     Object.keys(obj).map(key => {
+      console.log(key);
       if (obj[key] && typeof obj[key] === 'object') {
         if (typeof data[key] !== 'undefined') {
+          console.log('rec2');
+          console.log(opt, data);
           this.mergeRecursive(obj[key], data[key], {
             ...opt,
             depth: opt.depth + 1,
+            validation: {
+              ...opt.validation,
+              position: opt.depth,
+              status: true,
+            },
           });
 
+          console.log(key, opt, obj[key], data);
+
+          // Not exist add
           if (Object.keys(data[key]).length) {
             obj[key] = Object.assign(obj[key], data[key]);
           }
 
-          delete data[key];
+          if (opt.validation.position > opt.depth) {
+            delete data[key];
+          }
         } else {
-          this.mergeRecursive(obj[key], data, {
+          console.log('rec1');
+          console.log(opt, data);
+          this.mergeRecursive(obj[key], obj instanceof Array ? { ...data } : data, {
             ...opt,
             depth: opt.depth + 1,
           });
         }
       } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
+        console.log('ookok');
         obj[key] = data[key];
-        delete data[key];
+        if (opt.validation.position > opt.depth) {
+          delete data[key];
+        }
       }
 
-      if (Object.keys(data).length > 0 && !opt.depth) {
+      if (
+        obj[key]
+        && Object.keys(data).length > 0
+        && opt.depth === opt.validation.position
+      ) {
         obj[key] = Object.assign(obj[key], data);
       }
 
@@ -183,38 +209,54 @@ export default class Update {
     return obj;
   }
 
-  add(position, data) {
-    return this.obj.update(addOnRemapKey(position, '$exist'), data, false);
+  add(position, data, newObj) {
+    return this.obj.update(addOnRemapKey(position, '$exist'), data, newObj);
   }
 }
 
 /**
  * PROTOTYPES
  */
-// eslint-disable-next-line no-extend-native
-Object.prototype.update = function(find, data, newObj = true) {
-  const self = newObj ? JSON.parse(JSON.stringify(this)) : this;
-  const element = new Update(self);
-  element.find(find).merge(data);
-  return element.obj;
-};
+const cmds = ['update', 'find', 'add', 'merge', 'exist'];
 
-// eslint-disable-next-line no-extend-native
-Object.prototype.add = function(position, data, newObj = true) {
-  const self = newObj ? JSON.parse(JSON.stringify(this)) : this;
-  const element = new Update(self);
-  element.add(position, data);
-  return element.obj;
-};
+cmds.map(cmd => {
+  // eslint-disable-next-line no-extend-native
+  Object.prototype[cmd] = function (...props) {
+    // last element is a toggle to create a new Object
+    const newObj = typeof props[props.length - 1] === 'boolean' ? props.pop() : ObjUtils.newObj;
 
-// eslint-disable-next-line no-extend-native
-Object.prototype.merge = function(data) {
-  const element = new Update(this);
-  return element.merge(data);
-};
+    const self = newObj ? JSON.parse(JSON.stringify(this)) : this;
+    const element = new ObjUtils(self);
 
-// eslint-disable-next-line no-extend-native
-Object.prototype.find = function(data) {
-  const element = new Update(this);
-  return element.find(data);
-};
+    let conditions, data, position;
+
+    switch (cmd) {
+      case 'update':
+        // eslint-disable-next-line no-case-declarations
+        [conditions, data] = props;
+        element.find(conditions, newObj).merge(data, newObj);
+        break;
+      case 'find':
+        [conditions] = props;
+        return element.find(conditions, newObj);
+      case 'merge':
+        [data] = props;
+        return element.merge(data, newObj);
+      case 'add':
+        [position, data] = props;
+        element.add(position, data);
+        break;
+      case 'exist':
+        [data] = props;
+        return !!this.find({
+          [data]: '$exist',
+        }, newObj).length;
+      default:
+        console.log('default');
+    }
+
+    return element.obj;
+  };
+
+  return true;
+});

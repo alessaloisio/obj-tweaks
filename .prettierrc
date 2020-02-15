@@ -2,6 +2,7 @@
   "useTabs": false,
   "printWidth": 80,
   "tabWidth": 2,
+  "operatorLinebreak": false,
   "singleQuote": true,
   "trailingComma": "es5",
   "spaceBeforeFunctionParen": false,
