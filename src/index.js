@@ -50,8 +50,6 @@ const addOnRemapKey = (opt, operator = '$exist') => {
  * Class ObjUtils
  */
 export default class ObjUtils {
-  static newObj = true;
-
   constructor(obj) {
     this.obj = obj;
 
@@ -154,53 +152,50 @@ export default class ObjUtils {
 
   mergeRecursive(obj, data, opt = { ...this.searchState }) {
     Object.keys(obj).map(key => {
-      console.log(key);
       if (obj[key] && typeof obj[key] === 'object') {
-        if (typeof data[key] !== 'undefined') {
-          console.log('rec2');
-          console.log(opt, data);
-          this.mergeRecursive(obj[key], data[key], {
+        if (data[key]) {
+          opt = {
             ...opt,
-            depth: opt.depth + 1,
             validation: {
               ...opt.validation,
               position: opt.depth,
               status: true,
             },
-          });
-
-          console.log(key, opt, obj[key], data);
-
-          // Not exist add
-          if (Object.keys(data[key]).length) {
-            obj[key] = Object.assign(obj[key], data[key]);
-          }
-
-          if (opt.validation.position > opt.depth) {
-            delete data[key];
-          }
-        } else {
-          console.log('rec1');
-          console.log(opt, data);
-          this.mergeRecursive(obj[key], obj instanceof Array ? { ...data } : data, {
-            ...opt,
-            depth: opt.depth + 1,
-          });
+          };
         }
-      } else if (typeof data[key] !== 'undefined' && obj[key] !== data[key]) {
-        console.log('ookok');
-        obj[key] = data[key];
-        if (opt.validation.position > opt.depth) {
+
+        this.mergeRecursive(
+          obj[key],
+          data[key] ? data[key] : JSON.parse(JSON.stringify(data)),
+          { ...opt, depth: opt.depth + 1 }
+        );
+
+        // Add if not exist
+        if (data[key]) {
+          if (Object.keys(data[key]).length) {
+            Object
+              .keys(data[key])
+              .map(newKey => obj[key][newKey] = data[key][newKey]);
+          }
+
           delete data[key];
         }
-      }
 
-      if (
-        obj[key]
-        && Object.keys(data).length > 0
-        && opt.depth === opt.validation.position
-      ) {
-        obj[key] = Object.assign(obj[key], data);
+        if (opt.depth === opt.validation.position) {
+          if (obj instanceof Array) {
+            // Parent of a find
+            obj[key] = Object.assign(obj[key], data);
+          } else {
+            // Parent of a validation
+            obj = Object.assign(obj, data);
+          }
+        }
+      } else if (data[key] && data[key] !== obj[key]) {
+        // Update value
+        obj[key] = data[key];
+        if (opt.depth >= opt.validation.position) {
+          delete data[key];
+        }
       }
 
       return true;
@@ -210,9 +205,15 @@ export default class ObjUtils {
   }
 
   add(position, data, newObj) {
-    return this.obj.update(addOnRemapKey(position, '$exist'), data, newObj);
+    return this.obj.update(
+      addOnRemapKey(position, '$exist'),
+      data,
+      newObj
+    );
   }
 }
+
+ObjUtils.newObj = true;
 
 /**
  * PROTOTYPES

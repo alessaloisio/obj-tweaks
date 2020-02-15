@@ -63,14 +63,17 @@ _index.default.newObj = false; // console.log(state.update({ _id: 234567 }, { 'i
 //   { status: false }
 // ).data);
 // console.log(state.update({ _id: 123456 }, { status: false, 'info.age': 18 }));
-
-console.log(state.find({
-  _id: 123456
-}).merge({
-  'info.age': 18
-})); // console.log(state.find({ active: true }));
-// TODO : Not working, just one updated
-// console.log(state.merge({ 'info.age': 18 }).data.users);
+// console.log(state.find({ _id: 123456 }).merge({ 'info.age': 18 }));
+// console.log(state.find({ active: true }));
+// console.log(state.merge({
+//   'info.age': 18,
+//   'test.test2': 'new on parent, string path',
+//   test2: 'new on parent',
+//   'info.test2': 'new on prop',
+// }));
+// console.log('\n\nDEMO ::::');
+// console.log(state.data.users);
+// console.log(state.data.favourites);
 // if not exist add
 // console.log(
 //   'demo',
@@ -83,27 +86,15 @@ console.log(state.find({
 //     }
 //   ).data.users
 // );
-// console.log(
-//   state.add('users', {
-//     987665: {
-//       _id: 987665,
-//       active: true,
-//       status: true,
-//       info: {
-//         name: 'Serge',
-//         age: 40,
-//       },
-//     },
-//   })
-// );
-// console.log(
-//   state.add('users.987665', {
-//     _id: 987665,
-//     active: true,
-//     status: true,
-//     info: {
-//       name: 'Serge',
-//       age: 40,
-//     },
-//   })
-// );
+
+console.log(state.add('users', {
+  987665: {
+    _id: 987665,
+    active: true,
+    status: true,
+    info: {
+      name: 'Serge',
+      age: 40
+    }
+  }
+}).data);
