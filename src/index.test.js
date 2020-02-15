@@ -17,6 +17,7 @@ const state = {
           },
         },
       },
+
     },
     favourites: {
       234567: {
@@ -79,19 +80,7 @@ ObjUtils.newObj = false;
 // console.log(state.data.users);
 // console.log(state.data.favourites);
 
-// if not exist add
-// console.log(
-//   'demo',
-//   state.update(
-//     { _id: 123456 },
-//     {
-//       status: false,
-//       'info.age': 18,
-//       'info.test': 'kikou',
-//     }
-//   ).data.users
-// );
-
+// TODO
 console.log(
   state.add('users', {
     987665: {
@@ -105,3 +94,24 @@ console.log(
     },
   }).data
 );
+
+// if not exist add
+// console.log(
+//   'demo',
+//   state.update(
+//     { _id: 123456 },
+//     {
+//       status: false,
+//       'info.age': 18,
+//       'info.test': 'kikou',
+//     }
+//   ).data.users
+// );
+
+// console.log(state.add('users', {
+//   123456: {
+//     _id: 123456,
+//     active: true,
+//     status: false,
+//   },
+// }).data.users['123456']);

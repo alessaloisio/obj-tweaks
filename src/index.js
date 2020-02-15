@@ -61,6 +61,8 @@ export default class ObjUtils {
         findPath: [],
       },
     };
+
+    this.updated = false;
   }
 
   find(conditions) {
@@ -181,28 +183,36 @@ export default class ObjUtils {
           delete data[key];
         }
 
-        if (opt.depth === opt.validation.position) {
-          if (obj instanceof Array) {
-            // Parent of a find
+        // console.log(opt);
+        // console.log(this.updated);
+        // Parent of a validation
+        if (Object.keys(data).length && opt.depth === opt.validation.position) {
+          if (opt.validation.status
+            || (!this.updated && opt.depth === opt.validation.position)) {
             Object
               .keys(data)
               .map(newProp => {
-                if (typeof obj[key][newProp] === 'undefined') {
-                  obj[key] = Object.assign(obj[key], data);
+                if (obj instanceof Array) {
+                  if (typeof obj[key][newProp] === 'undefined') {
+                    obj[key][newProp] = data[newProp];
+                  }
+                } else if (typeof obj[newProp] === 'undefined') {
+                  obj[newProp] = data[newProp];
                 }
               });
-          } else {
-            // Parent of a validation
-            obj = Object.assign(obj, data);
+            this.updated = true;
           }
         }
-      } else if (data[key] && data[key] !== obj[key]) {
+      } else if (typeof data[key] !== 'undefined') {
         // Update value
-        obj[key] = data[key];
-        if (opt.depth >= opt.validation.position) {
-          delete data[key];
+        if (data[key] !== obj[key]) {
+          obj[key] = data[key];
         }
+
+        // if (opt.depth >= opt.validation.position) {
+        delete data[key];
       }
+
 
       return true;
     });
@@ -210,11 +220,10 @@ export default class ObjUtils {
     return obj;
   }
 
-  add(position, data, newObj) {
+  add(position, data) {
     return this.obj.update(
       addOnRemapKey(position, '$exist'),
-      data,
-      newObj
+      data
     );
   }
 }
@@ -246,27 +255,26 @@ cmds.map(cmd => {
 
     switch (cmd) {
       case 'update':
-        // eslint-disable-next-line no-case-declarations
         [conditions, data] = props;
-        element.find(conditions, newObj).merge(data, newObj);
+        element.find(conditions).merge(data);
         break;
-      case 'find':
-        [conditions] = props;
-        return element.find(conditions, newObj);
-      case 'merge':
-        [data] = props;
-        return element.merge(data, newObj);
       case 'add':
         [position, data] = props;
         element.add(position, data);
         break;
+      case 'find':
+        [conditions] = props;
+        return element.find(conditions);
+      case 'merge':
+        [data] = props;
+        return element.merge(data);
       case 'exist':
         [data] = props;
         return !!this.find({
           [data]: '$exist',
-        }, newObj).length;
+        }).length;
       default:
-        console.log('default');
+        console.log('default', cmd);
     }
 
     return element.obj;
