@@ -212,7 +212,11 @@ function () {
           if (opt.depth === opt.validation.position) {
             if (obj instanceof Array) {
               // Parent of a find
-              obj[key] = Object.assign(obj[key], data);
+              Object.keys(data).map(function (newProp) {
+                if (typeof obj[key][newProp] === 'undefined') {
+                  obj[key] = Object.assign(obj[key], data);
+                }
+              });
             } else {
               // Parent of a validation
               obj = Object.assign(obj, data);
@@ -241,21 +245,30 @@ function () {
 }();
 
 exports.default = ObjUtils;
-ObjUtils.newObj = true;
+ObjUtils.newObj = false;
 /**
  * PROTOTYPES
  */
 
-var cmds = ['update', 'find', 'add', 'merge', 'exist'];
+var cmds = ['new', 'update', 'find', 'add', 'merge', 'exist'];
 cmds.map(function (cmd) {
   // eslint-disable-next-line no-extend-native
   Object.prototype[cmd] = function () {
+    // last element is a toggle to create a new Object
+    var newObj;
+
     for (var _len = arguments.length, props = new Array(_len), _key = 0; _key < _len; _key++) {
       props[_key] = arguments[_key];
     }
 
-    // last element is a toggle to create a new Object
-    var newObj = typeof props[props.length - 1] === 'boolean' ? props.pop() : ObjUtils.newObj;
+    if (typeof props[props.length - 1] === 'boolean') {
+      newObj = props.pop();
+    } else if (cmd === 'new') {
+      newObj = true;
+    } else {
+      newObj = ObjUtils.newObj;
+    }
+
     var self = newObj ? JSON.parse(JSON.stringify(this)) : this;
     var element = new ObjUtils(self);
     var conditions, data, position;

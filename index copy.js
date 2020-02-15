@@ -166,7 +166,7 @@ export default class ObjUtils {
 
         this.mergeRecursive(
           obj[key],
-          data[key] ? data[key] : JSON.parse(JSON.stringify(data)),
+          data[key] ? data[key] : data,
           { ...opt, depth: opt.depth + 1 }
         );
 
@@ -179,22 +179,6 @@ export default class ObjUtils {
           }
 
           delete data[key];
-        }
-
-        if (opt.depth === opt.validation.position) {
-          if (obj instanceof Array) {
-            // Parent of a find
-            Object
-              .keys(data)
-              .map(newProp => {
-                if (typeof obj[key][newProp] === 'undefined') {
-                  obj[key] = Object.assign(obj[key], data);
-                }
-              });
-          } else {
-            // Parent of a validation
-            obj = Object.assign(obj, data);
-          }
         }
       } else if (data[key] && data[key] !== obj[key]) {
         // Update value
@@ -210,11 +194,10 @@ export default class ObjUtils {
     return obj;
   }
 
-  add(position, data, newObj) {
+  add(position, data) {
     return this.obj.update(
       addOnRemapKey(position, '$exist'),
-      data,
-      newObj
+      data
     );
   }
 }
@@ -248,14 +231,14 @@ cmds.map(cmd => {
       case 'update':
         // eslint-disable-next-line no-case-declarations
         [conditions, data] = props;
-        element.find(conditions, newObj).merge(data, newObj);
+        element.find(conditions).merge(data);
         break;
       case 'find':
         [conditions] = props;
-        return element.find(conditions, newObj);
+        return element.find(conditions);
       case 'merge':
         [data] = props;
-        return element.merge(data, newObj);
+        return element.merge(data);
       case 'add':
         [position, data] = props;
         element.add(position, data);
@@ -264,9 +247,8 @@ cmds.map(cmd => {
         [data] = props;
         return !!this.find({
           [data]: '$exist',
-        }, newObj).length;
+        }).length;
       default:
-        console.log('default');
     }
 
     return element.obj;

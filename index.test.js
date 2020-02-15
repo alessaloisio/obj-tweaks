@@ -62,7 +62,7 @@ _index.default.newObj = false; // console.log(state.update({ _id: 234567 }, { 'i
 //   },
 //   { status: false }
 // ).data);
-// console.log(state.update({ _id: 123456 }, { status: false, 'info.age': 18 }));
+// console.log(state.update({ _id: 123456 }, { status: false, 'info.age': 18 }).data.users);
 // console.log(state.find({ _id: 123456 }).merge({ 'info.age': 18 }));
 // console.log(state.find({ active: true }));
 // console.log(state.merge({
