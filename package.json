@@ -7,41 +7,43 @@
   "scripts": {
     "lint": "eslint src test",
     "lint:fix": "eslint --fix src test",
-    "clean:node": "rm -rf index.js lib",
-    "clean:browser": "rm -rf obj-tweaks*.js",
-    "clean": "npm run clean:node && npm run clean:browser",
-    "minify": "uglifyjs obj-tweaks.js -o obj-tweaks.min.js  --compress --mangle --comments /Copyright/",
+    "clean": "rm -rf index.js dist",
+    "minify": "uglifyjs dist/obj-tweaks.js -o dist/obj-tweaks.min.js  --compress --mangle --comments /Copyright/",
     "build:browser": "rollup -c && npm run minify",
-    "build:node": "babel src -d .",
+    "build:node": "webpack --mode=development",
     "build": "npm run build:browser && npm run build:node",
     "watch:node": "babel src -wd .",
     "watch:browser": "rollup -c -w",
-    "pretest": "npm run lint && npm run build",
-    "test": "nyc mocha --require @babel/register --reporter dot"
+    "pretest": "npm run lint && npm run build"
   },
   "engines": {
     "node": ">= 0.10"
   },
   "license": "MIT",
   "repository": "alessaloisio/obj-tweaks",
+  "keywords": [
+    "object",
+    "manipulation",
+    "tools",
+    "redux",
+    "immutable"
+  ],
   "devDependencies": {
-    "@babel/cli": "^7.7.0",
-    "@babel/core": "^7.7.2",
+    "@babel/core": "^7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
-    "@babel/register": "^7.7.0",
-    "@babel/runtime": "^7.7.2",
+    "@babel/runtime": "^7.8.4",
     "babel-eslint": "^10.0.3",
     "babel-plugin-add-module-exports": "^1.0.2",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "mocha": "^6.2.2",
-    "nyc": "^14.1.1",
-    "rollup": "^1.26.3",
+    "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "uglify-js": "^3.6.8"
-  }
+    "uglify-js": "^3.6.8",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {}
 }

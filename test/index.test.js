@@ -1,48 +1,49 @@
-"use strict";
+// const ObjTweaks = require('../index');
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+// console.log(ObjTweaks);
 
-var _index = _interopRequireDefault(require("./index"));
+// // DEMO
+// const state = {
+//   data: {
+//     users: {
+//       123456: {
+//         _id: 123456,
+//         active: true,
+//         status: true,
+//         info: {
+//           name: 'Alessandro',
+//           age: 24,
+//           links: {
+//             blog: 'https://aloisio.work',
+//           },
+//         },
+//       },
+//     },
+//     favourites: {
+//       234567: {
+//         _id: 234567,
+//         active: true,
+//         status: true,
+//         info: {
+//           name: 'Alicia',
+//           age: 24,
+//           links: {
+//             blog: 'https://atraversleslivres.be',
+//           },
+//         },
+//       },
+//     },
+//   },
+//   loading: false,
+//   error: null,
+// };
 
-// DEMO
-var state = {
-  data: {
-    users: {
-      123456: {
-        _id: 123456,
-        active: true,
-        status: true,
-        info: {
-          name: 'Alessandro',
-          age: 24,
-          links: {
-            blog: 'https://aloisio.work'
-          }
-        }
-      }
-    },
-    favourites: {
-      234567: {
-        _id: 234567,
-        active: true,
-        status: true,
-        info: {
-          name: 'Alicia',
-          age: 24,
-          links: {
-            blog: 'https://atraversleslivres.be'
-          }
-        }
-      }
-    }
-  },
-  loading: false,
-  error: null
-}; // console.log(state.update({ _id: 234567 }, { 'info.age': 30 }).data.favourites);
+// console.log(state.update({ _id: 234567 }, { 'info.age': 30 }).data.favourites);
 // console.log(state.update({ _id: 234567, active: true }, { status: false }).data);
 // console.log(
 //   state.update({ active: true }, { status: false }).data
 // );
+
 // console.log('multi conditions', state.update(
 //   {
 //     status: true,
@@ -50,9 +51,11 @@ var state = {
 //   },
 //   { status: false }
 // ).data);
+
 // console.log(state.update({ _id: 123456 }, { status: false, 'info.age': 18 }).data.users);
 // console.log(state.find({ _id: 123456 }).merge({ 'info.age': 18 }));
 // console.log(state.find({ active: true }));
+
 // console.log(state.merge({
 //   'info.age': 18,
 //   'test.test2': 'new on parent, string path',
@@ -62,6 +65,7 @@ var state = {
 // console.log('\n\nDEMO ::::');
 // console.log(state.data.users);
 // console.log(state.data.favourites);
+
 // console.log(
 //   state.add('users', {
 //     987665: {
@@ -75,6 +79,7 @@ var state = {
 //     },
 //   }).data
 // );
+
 // TODO
 // console.log(
 //   state.add('users.987665', {
@@ -87,6 +92,7 @@ var state = {
 //     },
 //   }).data
 // );
+
 // if not exist add
 // console.log(
 //   'demo',
@@ -99,6 +105,7 @@ var state = {
 //     }
 //   ).data.users
 // );
+
 // console.log(state.add('users', {
 //   123456: {
 //     _id: 123456,
@@ -106,9 +113,7 @@ var state = {
 //     status: false,
 //   },
 // }).data.users['123456']);
-// SWAP / DELETE
 
-state.swap({
-  _id: 123456
-}, 'favourites');
-console.log(state.data);
+// SWAP / DELETE
+// state.swap({ _id: 123456 }, 'favourites');
+// console.log(state);

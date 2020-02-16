@@ -2,7 +2,6 @@
 import fs from 'fs';
 import babel from 'rollup-plugin-babel';
 import babelPresetEnv from '@babel/preset-env';
-import builtins from 'rollup-plugin-node-builtins';
 import pkg from './package.json';
 
 export default {
@@ -12,11 +11,10 @@ export default {
       presets: [[babelPresetEnv, { modules: false }]],
       babelrc: false,
     }),
-    builtins(),
   ],
   output: [
     {
-      file: 'obj-kit.js',
+      file: 'dist/obj-tweaks.js',
       format: 'umd',
       name: pkg.name,
       banner: `/*!\n${String(fs.readFileSync('./LICENSE'))
