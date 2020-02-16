@@ -18,7 +18,7 @@ require('obj-tweaks');
 ```
 
 ## Commands
-- {Object}.new().{Commands} => Create a deep copy of your object
+- {Object}.new().*{Commands}* => **Create a deep copy of your object**
 - {Object}.find(conditions)
 - {Object}.merge(data)
 - {Object}.update(conditions, data)
