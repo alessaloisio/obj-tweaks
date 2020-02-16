@@ -2,6 +2,10 @@
 
 Library to manipulate javascript object
 
+![npm](https://img.shields.io/npm/v/obj-tweaks)
+![npm bundle size](https://img.shields.io/bundlephobia/min/obj-tweaks)
+[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Falessaloisio%2Fobj-tweaks)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Falessaloisio%2Fobj-tweaks)
+
 ## Commands
 - {Object}.find(conditions)
 - {Object}.merge(data)
