@@ -6,14 +6,31 @@
 
 Library to manipulate javascript object
 
+## Installation
+
+```sh
+npm i obj-tweaks
+```
+
+```js
+import 'obj-tweaks';
+require('obj-tweaks');
+```
+
 ## Commands
+- {Object}.new().{Commands} => Create a deep copy of your object
 - {Object}.find(conditions)
 - {Object}.merge(data)
 - {Object}.update(conditions, data)
+- {Object}.add(position, data)
+- {Object}.delete(conditions)
+- {Object}.swap(conditions, position)
+- {Object}.exist(position)
 
 ## Examples
 ```js
 // Working Object
+
 const state = {
   data: {
     users: {
@@ -51,6 +68,7 @@ const state = {
 /**
 * Simple find
 */
+
 state.find({ active: true })
 
 // output
@@ -70,6 +88,7 @@ state.find({ active: true })
 /**
 * If you want information about users who have 24 years
 */
+
 state.find({ age: 24 })
 
 // output
@@ -88,6 +107,7 @@ state.find({ age: 24 })
 /**
 * But if you want the previous object, just add the parent property
 */
+
 state.find({ 'info.age': 24 })
 
 // output
@@ -112,6 +132,7 @@ state.find({ 'info.age': 24 })
 /**
 * Simple merge
 */
+
 state.merge({ 'info.age': 18 })
 
 // output
@@ -135,11 +156,12 @@ state.merge({ 'info.age': 18 })
 }
 ```
 
-### 3. Combine
+### 2'. Combine
 ```js
 /**
 * Combine find and merge
 */
+
 state.find({ _id: 123456 }).merge({ 'info.age': 18 })
 
 // output
@@ -153,11 +175,12 @@ state.find({ _id: 123456 }).merge({ 'info.age': 18 })
 ]
 ```
 
-### 4. Update
+### 3. Update
 ```js
 /**
 * Update the working Object
 */
+
 state.update({ _id: 123456 }, { status: false, 'info.age': 18 })
 
 // output
@@ -179,15 +202,108 @@ state.update({ _id: 123456 }, { status: false, 'info.age': 18 })
 
 **Of course**, you can also add more conditions on find option and how many you want of depth for sub properties.
 
-## Installation
+### 4. Add
+```js
+/**
+* Add an element
+*/
 
-```sh
-npm i @alessio95/object-update
+state.add('users', {
+  987665: {
+    _id: 987665,
+    active: true,
+    status: true,
+    info: {
+      name: 'Serge',
+      age: 40,
+    },
+  },
+})
+
+// output
+{
+  data: {
+    favourites: {
+      234567: {
+        _id: 234567, active: true, info: { age: 24, links: { blog: 'https://atraversleslivres.be' }, name: 'Alicia' }, status: true,
+      },
+    },
+    users: {
+      123456: {
+        _id: 123456, active: true, info: { age: 24, links: { blog: 'https://aloisio.work' }, name: 'Alessandro' }, status: true,
+      },
+      987665: {
+        _id: 987665, active: true, info: { age: 40, name: 'Serge' }, status: true,
+      },
+    },
+  },
+  error: null,
+  loading: false,
+}
 ```
 
+### 5. Delete
 ```js
-import '@alessio95/object-update';
-const update = require('@alessio95/object-update');
+/**
+* Delete an element
+*/
+
+state.delete({ _id: 123456 })
+
+// output
+{
+  data: {
+    favourites: {
+      234567: {
+        _id: 234567, active: true, info: { age: 24, links: { blog: 'https://atraversleslivres.be' }, name: 'Alicia' }, status: true,
+      },
+    },
+    users: {},
+  },
+  error: null,
+  loading: false,
+}
+```
+
+### 6. Swap
+```js
+/**
+* Swap an element
+*/
+
+state.swap({ _id: 123456 }, 'favourites')
+
+// output
+{
+  data: {
+    favourites: {
+      123456: {
+        _id: 123456, active: true, info: { age: 24, links: { blog: 'https://aloisio.work' }, name: 'Alessandro' }, status: true,
+      },
+      234567: {
+        _id: 234567, active: true, info: { age: 24, links: { blog: 'https://atraversleslivres.be' }, name: 'Alicia' }, status: true,
+      },
+    },
+    users: {},
+  },
+  error: null,
+  loading: false,
+}
+```
+
+### 7. Exist
+```js
+/**
+* Determine if an element exist
+*/
+
+state.exist('users.123456')
+// output
+true
+
+state.exist('users.987544')
+// output
+false
 ```
 
 # License
