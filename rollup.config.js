@@ -1,29 +1,29 @@
 /* eslint import/no-extraneous-dependencies: 0 */
-import fs from "fs";
-import babel from "rollup-plugin-babel";
-import babelPresetEnv from "@babel/preset-env";
-import builtins from "rollup-plugin-node-builtins";
-import pkg from "./package.json";
+import fs from 'fs';
+import babel from 'rollup-plugin-babel';
+import babelPresetEnv from '@babel/preset-env';
+import builtins from 'rollup-plugin-node-builtins';
+import pkg from './package.json';
 
 export default {
-  input: "src/index.js",
+  input: 'src/index.js',
   plugins: [
     babel({
       presets: [[babelPresetEnv, { modules: false }]],
-      babelrc: false
+      babelrc: false,
     }),
-    builtins()
+    builtins(),
   ],
   output: [
     {
-      file: "obj-update.js",
-      format: "umd",
+      file: 'obj-kit.js',
+      format: 'umd',
       name: pkg.name,
-      banner: `/*!\n${String(fs.readFileSync("./LICENSE"))
+      banner: `/*!\n${String(fs.readFileSync('./LICENSE'))
         .trim()
-        .split("\n")
+        .split('\n')
         .map(l => ` * ${l}`)
-        .join("\n")}\n */`
-    }
-  ]
+        .join('\n')}\n */`,
+    },
+  ],
 };

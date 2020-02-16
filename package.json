@@ -1,5 +1,5 @@
 {
-  "name": "@alessio95/object-update",
+  "name": "obj-kit",
   "version": "0.0.1",
   "description": "Library to manipulate javascript object",
   "main": "index.js",
@@ -8,9 +8,9 @@
     "lint": "eslint src test",
     "lint:fix": "eslint --fix src test",
     "clean:node": "rm -rf index.js lib",
-    "clean:browser": "rm -rf obj-update*.js",
+    "clean:browser": "rm -rf obj-kit*.js",
     "clean": "npm run clean:node && npm run clean:browser",
-    "minify": "uglifyjs obj-update.js -o obj-update.min.js  --compress --mangle --comments /Copyright/",
+    "minify": "uglifyjs obj-kit.js -o obj-kit.min.js  --compress --mangle --comments /Copyright/",
     "build:browser": "rollup -c && npm run minify",
     "build:node": "babel src -d .",
     "build": "npm run build:browser && npm run build:node",

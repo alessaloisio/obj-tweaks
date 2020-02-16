@@ -38,8 +38,7 @@ var state = {
   },
   loading: false,
   error: null
-};
-_index.default.newObj = false; // console.log(state.update({ _id: 234567 }, { 'info.age': 30 }).data.favourites);
+}; // console.log(state.update({ _id: 234567 }, { 'info.age': 30 }).data.favourites);
 // console.log(state.update({ _id: 234567, active: true }, { status: false }).data);
 // console.log(
 //   state.update({ active: true }, { status: false }).data
@@ -48,17 +47,6 @@ _index.default.newObj = false; // console.log(state.update({ _id: 234567 }, { 'i
 //   {
 //     status: true,
 //     info: { age: 24 },
-//   },
-//   { status: false }
-// ).data);
-// console.log(state.update(
-//   {
-//     // strat position here
-//     info: {
-//       links: {
-//         blog: 'https://aloisio.work',
-//       },
-//     },
 //   },
 //   { status: false }
 // ).data);
@@ -119,5 +107,8 @@ _index.default.newObj = false; // console.log(state.update({ _id: 234567 }, { 'i
 //   },
 // }).data.users['123456']);
 // SWAP / DELETE
-// state.swap({ _id: 123456 }, 'favourites');
-// console.log(state.data);
+
+state.swap({
+  _id: 123456
+}, 'favourites');
+console.log(state.data);

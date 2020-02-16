@@ -1,6 +1,5 @@
 import ObjUtils from './index';
 
-
 // DEMO
 const state = {
   data: {
@@ -37,8 +36,6 @@ const state = {
   error: null,
 };
 
-ObjUtils.newObj = false;
-
 // console.log(state.update({ _id: 234567 }, { 'info.age': 30 }).data.favourites);
 // console.log(state.update({ _id: 234567, active: true }, { status: false }).data);
 // console.log(
@@ -49,18 +46,6 @@ ObjUtils.newObj = false;
 //   {
 //     status: true,
 //     info: { age: 24 },
-//   },
-//   { status: false }
-// ).data);
-
-// console.log(state.update(
-//   {
-//     // strat position here
-//     info: {
-//       links: {
-//         blog: 'https://aloisio.work',
-//       },
-//     },
 //   },
 //   { status: false }
 // ).data);
@@ -128,5 +113,5 @@ ObjUtils.newObj = false;
 // }).data.users['123456']);
 
 // SWAP / DELETE
-// state.swap({ _id: 123456 }, 'favourites');
-// console.log(state.data);
+state.swap({ _id: 123456 }, 'favourites');
+console.log(state.data);

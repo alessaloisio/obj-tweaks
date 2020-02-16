@@ -348,19 +348,17 @@ cmds.map(function (cmd) {
 
       case 'delete':
         conditions = props[0];
-        console.log(cmd);
         element.delete(conditions);
         break;
 
       case 'swap':
         conditions = props[0];
         position = props[1];
-        console.log(cmd);
         element.swap(conditions, position);
         break;
 
-      default:
-        console.log('default', cmd);
+      default: // console.log('Command not found', cmd);
+
     }
 
     return element.obj;

@@ -1,4 +1,4 @@
-# OBJECT-UPDATE
+# OBJ-KIT
 
 Library to manipulate javascript object
 
