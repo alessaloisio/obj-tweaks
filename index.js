@@ -153,8 +153,7 @@ function () {
 
       if (opt.validation.status && opt.depth === opt.validation.position) {
         if (!Object.keys(conditions).length) {
-          // eslint-disable-next-line no-underscore-dangle
-          // obj._v_path = opt.validation.findPath;
+          obj.constructor._v_path = opt.validation.findPath;
           results.push(obj);
         }
 
@@ -208,13 +207,11 @@ function () {
             }
 
             delete data[key];
-          } // console.log(opt);
-          // console.log(this.updated);
-          // Parent of a validation
+          } // Parent of a validation
 
 
           if (Object.keys(data).length && opt.depth === opt.validation.position) {
-            if (opt.validation.status || !_this3.updated && opt.depth === opt.validation.position) {
+            if (opt.validation.status || !_this3.updated) {
               Object.keys(data).map(function (newProp) {
                 if (obj instanceof Array) {
                   if (typeof obj[key][newProp] === 'undefined') {
@@ -223,6 +220,8 @@ function () {
                 } else if (typeof obj[newProp] === 'undefined') {
                   obj[newProp] = data[newProp];
                 }
+
+                return true;
               });
               _this3.updated = true;
             }
@@ -246,6 +245,49 @@ function () {
     value: function add(position, data) {
       return this.obj.update(addOnRemapKey(position, '$exist'), data);
     }
+  }, {
+    key: "delete",
+    value: function _delete(conditions) {
+      var _this4 = this;
+
+      // conditions => object
+      // TODO: string conditions ?
+      var elements = this.obj.find(conditions);
+      var results = elements.map(function (e) {
+        var vPath = e.constructor._v_path;
+        var lastProp = vPath.pop();
+
+        var lastPosition = _this4.goto(vPath);
+
+        if (lastPosition[lastProp]) {
+          delete lastPosition[lastProp];
+        }
+
+        return (0, _defineProperty2.default)({}, lastProp, e);
+      });
+      return results;
+    }
+  }, {
+    key: "swap",
+    value: function swap(conditions, position) {
+      var copy = this.delete(conditions);
+      this.obj.add(position, copy);
+    }
+  }, {
+    key: "goto",
+    value: function goto(position) {
+      var obj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.obj;
+
+      if (position.length) {
+        var key = position.reverse().pop();
+
+        if (obj[key]) {
+          obj = this.goto(position, obj[key]);
+        }
+      }
+
+      return obj;
+    }
   }]);
   return ObjUtils;
 }();
@@ -253,10 +295,10 @@ function () {
 exports.default = ObjUtils;
 ObjUtils.newObj = false;
 /**
- * PROTOTYPES
- */
+   * PROTOTYPES
+   */
 
-var cmds = ['new', 'update', 'find', 'add', 'merge', 'exist'];
+var cmds = ['new', 'update', 'find', 'add', 'merge', 'exist', 'delete', 'swap'];
 cmds.map(function (cmd) {
   // eslint-disable-next-line no-extend-native
   Object.prototype[cmd] = function () {
@@ -302,7 +344,20 @@ cmds.map(function (cmd) {
 
       case 'exist':
         data = props[0];
-        return !!this.find((0, _defineProperty2.default)({}, data, '$exist')).length;
+        return !!element.find((0, _defineProperty2.default)({}, data, '$exist')).length;
+
+      case 'delete':
+        conditions = props[0];
+        console.log(cmd);
+        element.delete(conditions);
+        break;
+
+      case 'swap':
+        conditions = props[0];
+        position = props[1];
+        console.log(cmd);
+        element.swap(conditions, position);
+        break;
 
       default:
         console.log('default', cmd);

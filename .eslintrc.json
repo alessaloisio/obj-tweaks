@@ -20,6 +20,7 @@
     "one-var": 0,
     "one-var-declaration-per-line": 0,
     "space-before-function-paren": 0,
+    "no-underscore-dangle": 0,
     "func-names": 0,
     "no-console": 0,
     "newline-per-chained-call": 0,

@@ -74,19 +74,32 @@ _index.default.newObj = false; // console.log(state.update({ _id: 234567 }, { 'i
 // console.log('\n\nDEMO ::::');
 // console.log(state.data.users);
 // console.log(state.data.favourites);
+// console.log(
+//   state.add('users', {
+//     987665: {
+//       _id: 987665,
+//       active: true,
+//       status: true,
+//       info: {
+//         name: 'Serge',
+//         age: 40,
+//       },
+//     },
+//   }).data
+// );
 // TODO
-
-console.log(state.add('users', {
-  987665: {
-    _id: 987665,
-    active: true,
-    status: true,
-    info: {
-      name: 'Serge',
-      age: 40
-    }
-  }
-}).data); // if not exist add
+// console.log(
+//   state.add('users.987665', {
+//     _id: 987665,
+//     active: true,
+//     status: true,
+//     info: {
+//       name: 'Serge',
+//       age: 40,
+//     },
+//   }).data
+// );
+// if not exist add
 // console.log(
 //   'demo',
 //   state.update(
@@ -105,3 +118,6 @@ console.log(state.add('users', {
 //     status: false,
 //   },
 // }).data.users['123456']);
+// SWAP / DELETE
+// state.swap({ _id: 123456 }, 'favourites');
+// console.log(state.data);

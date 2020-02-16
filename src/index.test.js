@@ -17,7 +17,6 @@ const state = {
           },
         },
       },
-
     },
     favourites: {
       234567: {
@@ -80,20 +79,32 @@ ObjUtils.newObj = false;
 // console.log(state.data.users);
 // console.log(state.data.favourites);
 
+// console.log(
+//   state.add('users', {
+//     987665: {
+//       _id: 987665,
+//       active: true,
+//       status: true,
+//       info: {
+//         name: 'Serge',
+//         age: 40,
+//       },
+//     },
+//   }).data
+// );
+
 // TODO
-console.log(
-  state.add('users', {
-    987665: {
-      _id: 987665,
-      active: true,
-      status: true,
-      info: {
-        name: 'Serge',
-        age: 40,
-      },
-    },
-  }).data
-);
+// console.log(
+//   state.add('users.987665', {
+//     _id: 987665,
+//     active: true,
+//     status: true,
+//     info: {
+//       name: 'Serge',
+//       age: 40,
+//     },
+//   }).data
+// );
 
 // if not exist add
 // console.log(
@@ -115,3 +126,7 @@ console.log(
 //     status: false,
 //   },
 // }).data.users['123456']);
+
+// SWAP / DELETE
+// state.swap({ _id: 123456 }, 'favourites');
+// console.log(state.data);

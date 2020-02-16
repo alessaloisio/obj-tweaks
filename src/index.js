@@ -131,8 +131,7 @@ export default class ObjUtils {
     // Validation results and clear states
     if (opt.validation.status && opt.depth === opt.validation.position) {
       if (!Object.keys(conditions).length) {
-        // eslint-disable-next-line no-underscore-dangle
-        // obj._v_path = opt.validation.findPath;
+        obj.constructor._v_path = opt.validation.findPath;
         results.push(obj);
       }
 
@@ -183,12 +182,9 @@ export default class ObjUtils {
           delete data[key];
         }
 
-        // console.log(opt);
-        // console.log(this.updated);
         // Parent of a validation
         if (Object.keys(data).length && opt.depth === opt.validation.position) {
-          if (opt.validation.status
-            || (!this.updated && opt.depth === opt.validation.position)) {
+          if (opt.validation.status || !this.updated) {
             Object
               .keys(data)
               .map(newProp => {
@@ -199,6 +195,7 @@ export default class ObjUtils {
                 } else if (typeof obj[newProp] === 'undefined') {
                   obj[newProp] = data[newProp];
                 }
+                return true;
               });
             this.updated = true;
           }
@@ -226,14 +223,50 @@ export default class ObjUtils {
       data
     );
   }
+
+  delete(conditions) {
+    // conditions => object
+    // TODO: string conditions ?
+    const elements = this.obj.find(conditions);
+
+    const results = elements.map(e => {
+      const vPath = e.constructor._v_path;
+      const lastProp = vPath.pop();
+      const lastPosition = this.goto(vPath);
+
+      if (lastPosition[lastProp]) {
+        delete lastPosition[lastProp];
+      }
+
+      return { [lastProp]: e };
+    });
+
+    return results;
+  }
+
+  swap(conditions, position) {
+    const copy = this.delete(conditions);
+    this.obj.add(position, copy);
+  }
+
+  goto(position, obj = this.obj) {
+    if (position.length) {
+      const key = position.reverse().pop();
+      if (obj[key]) {
+        obj = this.goto(position, obj[key]);
+      }
+    }
+
+    return obj;
+  }
 }
 
 ObjUtils.newObj = false;
 
 /**
- * PROTOTYPES
- */
-const cmds = ['new', 'update', 'find', 'add', 'merge', 'exist'];
+   * PROTOTYPES
+   */
+const cmds = ['new', 'update', 'find', 'add', 'merge', 'exist', 'delete', 'swap'];
 
 cmds.map(cmd => {
   // eslint-disable-next-line no-extend-native
@@ -258,21 +291,38 @@ cmds.map(cmd => {
         [conditions, data] = props;
         element.find(conditions).merge(data);
         break;
+
       case 'add':
         [position, data] = props;
         element.add(position, data);
         break;
+
       case 'find':
         [conditions] = props;
         return element.find(conditions);
+
       case 'merge':
         [data] = props;
         return element.merge(data);
+
       case 'exist':
         [data] = props;
-        return !!this.find({
+        return !!element.find({
           [data]: '$exist',
         }).length;
+
+      case 'delete':
+        [conditions] = props;
+        console.log(cmd);
+        element.delete(conditions);
+        break;
+
+      case 'swap':
+        [conditions, position] = props;
+        console.log(cmd);
+        element.swap(conditions, position);
+        break;
+
       default:
         console.log('default', cmd);
     }
