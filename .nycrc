@@ -7,7 +7,7 @@
     "src/**/*.js"
   ],
   "exclude": [
-    "obj-update.js",
+    "obj-tweaks.js",
     "lib/**/*.js"
   ]
 }

@@ -1,4 +1,4 @@
-# OBJ-KIT
+# OBJ-TWEAKS
 
 Library to manipulate javascript object
 

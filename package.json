@@ -1,6 +1,6 @@
 {
-  "name": "obj-kit",
-  "version": "0.0.1",
+  "name": "obj-tweaks",
+  "version": "0.0.2",
   "description": "Library to manipulate javascript object",
   "main": "index.js",
   "author": "Aloisio Alessandro",
@@ -8,9 +8,9 @@
     "lint": "eslint src test",
     "lint:fix": "eslint --fix src test",
     "clean:node": "rm -rf index.js lib",
-    "clean:browser": "rm -rf obj-kit*.js",
+    "clean:browser": "rm -rf obj-tweaks*.js",
     "clean": "npm run clean:node && npm run clean:browser",
-    "minify": "uglifyjs obj-kit.js -o obj-kit.min.js  --compress --mangle --comments /Copyright/",
+    "minify": "uglifyjs obj-tweaks.js -o obj-tweaks.min.js  --compress --mangle --comments /Copyright/",
     "build:browser": "rollup -c && npm run minify",
     "build:node": "babel src -d .",
     "build": "npm run build:browser && npm run build:node",
@@ -23,6 +23,7 @@
     "node": ">= 0.10"
   },
   "license": "MIT",
+  "repository": "alessaloisio/obj-tweaks",
   "devDependencies": {
     "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",
